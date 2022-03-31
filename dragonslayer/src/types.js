@@ -1,14 +1,14 @@
-import { generateNumberInRange } from "./util.js";
+import { generateNumberInRange, removeNullElementsFromArray } from "./util.js";
 
 // Base class for being with health and damage functionality.
-class Being {
+export class Being {
     name;
 
     maxHealth = 100;
     currentHealth = this.maxHealth;
     maxDamage = 10;
     minDamage = 1;
-    critChance = 0.02;
+    critChance = 0.05;
 
     attackCounter = 0;
 
@@ -28,6 +28,11 @@ class Being {
         target.currentHealth -= damage;
         this.attackCounter++;
         return damage;
+    }
+
+    // Returns true if the target is dead.
+    isDead() {
+        return this.currentHealth <= 0;
     }
 }
 
@@ -77,58 +82,65 @@ export class Dragon extends Being {
     minDamage = 8;
 }
 
-export const EventType = {
-    Attack: "Attack",
-    Heal: "Heal"
-};
-
-class LogELement {
-    eventType;
+class Log {
     source;
     target;
     message;
 
-    constructor(eventType, source, target, message) {
-        this.eventType = eventType;
+    constructor(source, target, message) {
         this.source = source;
         this.target = target;
         this.message = message;
     }
 }
 
-export class AttackLogElement extends LogELement {
+export class AttackLog extends Log {
     constructor(source, target, damage) {
-        super(EventType.Attack, source, target, `${source.name} attacked ${target.name} for ${damage} damage.`);
+        super(
+            source,
+            target,
+            `[${new Date().getHours()}:${new Date().getMinutes()}] <span style="color: orange;">${source.name}</span> attacked <span style="color: orange;">${target.name}</span> for <span style="color: red;">${damage}</span> damage.`
+        );
     }
 }
 
-export class HealLogElement extends LogELement {
+export class HealLog extends Log {
     constructor(source, target, healAmount) {
-        super(EventType.Heal, source, target, `${source.name} healed ${target.name} for ${healAmount} health.`);
+        super(
+            source,
+            target,
+            `[${new Date().getHours()}:${new Date().getMinutes()}] <span style="color: orange;">${source.name}</span> healed <span style="color: orange;">${target.name}</span> for <span style="color: green;">${healAmount}</span> health.`
+        );
     }
 }
 
 export class Logger {
-    logElements;
+    logs;
 
     constructor() {
-        this.logElements = [];
+        this.logs = [];
     }
 
     // Logs an attack event.
     logAttack(source, target, damage) {
-        this.logElements.push(new AttackLogElement(source, target, damage));
+        this.logs.push(new AttackLog(source, target, damage));
         console.log(`${source.name} attacked ${target.name} for ${damage} damage.`);
     }
 
     // Logs a heal event.
     logHeal(source, target, healAmount) {
-        this.logElements.push(new HealLogElement(source, target, healAmount));
+        this.logs.push(new HealLog(source, target, healAmount));
         console.log(`${source.name} healed ${target.name} for ${healAmount} health.`);
+    }
+
+    // Removes log at provided index.
+    removeLog(index) {
+        this.logs.pop(index);
+        this.logs = removeNullElementsFromArray(this.logs);
     }
 
     // Returns all log elements.
     getLogs() {
-        return this.logElements;
+        return this.logs;
     }
 }
