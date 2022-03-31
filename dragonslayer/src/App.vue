@@ -29,7 +29,7 @@ export default {
             if (this.enemy.isDead()) {
                 this.inProgress = false;
                 this.winner = this.player;
-                this.openResultModal();
+                this.showResultModal(true);
             }
         },
 
@@ -42,7 +42,7 @@ export default {
             if (this.enemy.isDead()) {
                 this.inProgress = false;
                 this.winner = this.player;
-                this.openResultModal();
+                this.showResultModal(true);
             }
         },
 
@@ -61,7 +61,7 @@ export default {
             if (this.player.isDead()) {
                 this.inProgress = false;
                 this.winner = this.enemy;
-                this.openResultModal();
+                this.showResultModal(true);
             }
         },
 
@@ -71,14 +71,9 @@ export default {
             this.attackPlayer();
         },
 
-        // Open the result modal.
-        openResultModal() {
-            document.getElementById("result-modal").classList.add("is-active");
-        },
-
-        // Close the result modal.
-        closeResultModal() {
-            document.getElementById("result-modal").classList.remove("is-active");
+        showResultModal(state) {
+            const modal = document.getElementById("result-modal");
+            state ? modal.classList.add("is-active") : modal.classList.remove("is-active");
         },
 
         // Reset the game.
@@ -135,7 +130,7 @@ export default {
                 </div>
             </div>
 
-            <button id="modal-close-button" class="modal-close is-large" aria-label="close" @click="closeResultModal()"></button>
+            <button id="modal-close-button" class="modal-close is-large" aria-label="close" @click="showResultModal(false)"></button>
         </div>
     </main>
 </template>
