@@ -85,7 +85,7 @@ export default {
 </script>
 
 <template>
-    <main class="p-5 is-full-height">
+    <main class="p-5 container is-full-height">
 
         <!-- Player healthbar -->
         <div class="box is-half">
