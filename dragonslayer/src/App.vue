@@ -65,6 +65,13 @@ export default {
             }
         },
 
+        // Surrender
+        forfeit() {
+            this.inProgress = false;
+            this.winner = this.enemy;
+            this.showResultModal(true);
+        },
+
         // Cause both the player and enemy to damage one another.
         clash() {
             this.attackEnemy();
@@ -90,24 +97,26 @@ export default {
         <!-- Player healthbar -->
         <div class="box is-half">
             <h1 class="is-size-3 has-text-centered mb-3">{{ player.name }}</h1>
-            <progress class="progress is-success" style="height: 100px;" v-bind:value="this.player.currentHealth" v-bind:max="this.player.maxHealth" />
+            <progress class="progress is-success" style="height: 50px;" v-bind:value="this.player.currentHealth" v-bind:max="this.player.maxHealth" />
         </div>
 
         <!-- Enemy healthbar -->
         <div class="box is-half">
             <h1 class="is-size-3 has-text-centered mb-3">{{ enemy.name }}</h1>
-            <progress class="progress is-danger" style="height: 100px;" v-bind:value="this.enemy.currentHealth" v-bind:max="this.enemy.maxHealth" />
+            <progress class="progress is-danger" style="height: 50px;" v-bind:value="this.enemy.currentHealth" v-bind:max="this.enemy.maxHealth" />
         </div>
 
         <div class="box has-text-centered">
             <!-- All buttons are disabled when the player or enemy dies. -->
-            <button class="button is-black" v-bind:disabled="!this.inProgress" @click="clash()">Attack</button>
+            <button class="button is-black mr-5" :disabled="!this.inProgress" @click="clash()">Attack</button>
             
             <!-- Special button is also disabled when attackcounter is less than 3-->
-            <button class="button is-warning mr-5 ml-5" v-bind:disabled="this.player.attackCounter < 3 || !this.inProgress" @click="attackEnemySpecial()">Special Attack</button>
+            <button class="button is-warning mr-5" :disabled="this.player.attackCounter < 3 || !this.inProgress" @click="attackEnemySpecial()">Special Attack</button>
 
             <!-- Heal button is also disabled if the player's current health is greater or equal to their max health. -->
-            <button class="button is-success" v-bind:disabled="!this.inProgress || this.player.currentHealth >= this.player.maxHealth" @click="healPlayer()">Heal</button>
+            <button class="button is-success mr-5" :disabled="!this.inProgress || this.player.currentHealth >= this.player.maxHealth" @click="healPlayer()">Heal</button>
+
+            <button class="button is-danger" :disabled="!this.inProgress"  @click="forfeit()">Forfeit</button>
         </div>
 
         <!-- Reactive log that displays attack and heal events. -->
